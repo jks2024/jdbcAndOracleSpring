@@ -1,6 +1,7 @@
 package com.kh.jdbcAndOracleSpring.dao;
 
 import com.kh.jdbcAndOracleSpring.vo.EmpVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -10,6 +11,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Repository
+@Slf4j
 public class EmpDAO {
     private final JdbcTemplate jdbcTemplate;
 
@@ -22,10 +24,33 @@ public class EmpDAO {
         return jdbcTemplate.query(sql, new EmpRowMapper());
     }
 
-    public void empInsert(EmpVO vo) {
+    public boolean empInsert(EmpVO vo) {
+        int result = 0;
         String sql = "INSERT INTO EMP (EMPNO, ENAME, JOB, MGR, HIREDATE, SAL, COMM, DEPTNO) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql, vo.getEmpNO(), vo.getName(), vo.getJob(),
-                vo.getMgr(), vo.getDate(), vo.getSal(), vo.getComm(), vo.getDeptNO());
+        try {
+            result = jdbcTemplate.update(sql, vo.getEmpNO(), vo.getName(), vo.getJob(),
+                    vo.getMgr(), vo.getDate(), vo.getSal(), vo.getComm(), vo.getDeptNO());
+        } catch(Exception e) {
+            //System.out.println(e.getMessage());
+            log.error(e.getMessage());
+        }
+        return result > 0;
+    }
+
+    public boolean empDelete(String name) {
+        int result = 0;
+        String query = "DELETE FROM EMP WHERE ENAME = ?";
+        try {
+            result = jdbcTemplate.update(query, name);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return result > 0;
+    }
+
+    public void empUpdate(EmpVO emp) {
+        String query = "UPDATE EMP SET JOB = ?, SAL = ?, COMM = ? WHERE ENAME = ?";
+        jdbcTemplate.update(query, emp.getJob(), emp.getSal(), emp.getComm(), emp.getName());
     }
 
     private static class EmpRowMapper implements RowMapper<EmpVO> {
@@ -61,7 +86,4 @@ public class EmpDAO {
         }
         System.out.println("----------------------------------------------");
     }
-
-
-
 }
