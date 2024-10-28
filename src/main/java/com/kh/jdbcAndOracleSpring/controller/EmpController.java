@@ -33,10 +33,6 @@ public class EmpController {
     public String insertDBEmp(@ModelAttribute("employees") EmpVO empVO, Model model) {
         boolean isSuccess = empDAO.empInsert(empVO);
         model.addAttribute("isSuccess", isSuccess);
-        return "thymeleaf/empResult";
+        return "thymeleaf/empR esult";
     }
-
-
-
-
 }

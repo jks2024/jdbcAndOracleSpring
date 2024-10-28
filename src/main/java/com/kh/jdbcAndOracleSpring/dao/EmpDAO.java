@@ -24,6 +24,18 @@ public class EmpDAO {
         return jdbcTemplate.query(sql, new EmpRowMapper());
     }
 
+    // 리스트로 받는 경우
+    public List<EmpVO> empSelectByDeptNo(int deptNo) {
+        String sql = "SELECT * FROM EMP WHERE DEPTNO = ?";
+        return jdbcTemplate.query(sql, new EmpRowMapper(), deptNo);
+    }
+
+    // 한개의 객체로 받는 경우
+    public EmpVO empSelectByEmpNo(int empNo) {
+        String sql = "SELECT * FROM EMP WHERE EMPNO = ?";
+        return jdbcTemplate.queryForObject(sql, new EmpRowMapper(), empNo);
+    }
+
     public boolean empInsert(EmpVO vo) {
         int result = 0;
         String sql = "INSERT INTO EMP (EMPNO, ENAME, JOB, MGR, HIREDATE, SAL, COMM, DEPTNO) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
